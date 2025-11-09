@@ -29,7 +29,7 @@ func setup_shape(shape_data: Dictionary, block_scene: PackedScene) -> void:
 	print("Pattern: ", pattern);
 	
 	var idx = 0
-	var blocks_created = 0;
+	var blocks_created = 0
 	for y in range(grid_height):
 		for x in range(grid_width):
 			if idx < pattern.size() and pattern[idx]:
@@ -37,6 +37,10 @@ func setup_shape(shape_data: Dictionary, block_scene: PackedScene) -> void:
 				add_child(block);
 				block.set_color(color);
 				block.position = Vector2(x * 64, y * 64);
+				
+				block.grid_pos = Vector2i(x, y);
+				block.shape_parent = self;
+				
 				blocks.append({"node": block, "grid_pos": Vector2i(x, y)});
 				blocks_created += 1;
 				print("  Block ", blocks_created, " at grid pos: ", Vector2i(x, y), " world pos: ", Vector2(x * 64, y * 64));
@@ -149,7 +153,6 @@ func get_best_placement_position() -> Vector2i:
 		return Vector2i(-1, -1);
 	
 	var block_size = grid_ref.dynamic_block_size;
-	
 	var snap_tolerance = block_size * 1.5;
 	
 	var best_anchor = Vector2i(-1, -1);
@@ -157,43 +160,23 @@ func get_best_placement_position() -> Vector2i:
 	
 	for block_data in blocks:
 		var block = block_data.node;
-		var block_global_pos = block.global_position;
-		var local_pos = block_global_pos - grid_ref.global_position;
 		
-		var center_x = local_pos.x / block_size;
-		var center_y = local_pos.y / block_size;
+		var placements = block.check_nearby_grid_placements(grid_ref, snap_tolerance);
 		
-		var check_cells = [
-			Vector2i(int(floor(center_x)), int(floor(center_y))),
-			Vector2i(int(ceil(center_x)), int(floor(center_y))),
-			Vector2i(int(floor(center_x)), int(ceil(center_y))),
-			Vector2i(int(ceil(center_x)), int(ceil(center_y))),
-			Vector2i(int(round(center_x)), int(round(center_y)))
-		];
-		
-		for grid_cell in check_cells:
-			var grid_x = grid_cell.x;
-			var grid_y = grid_cell.y;
-			
-			var potential_anchor = Vector2i(grid_x, grid_y) - block_data.grid_pos;
+		for placement in placements:
+			var potential_anchor = placement.anchor;
+			var distance = placement.distance;
 			
 			var is_valid = true;
 			for other_block_data in blocks:
 				var test_grid_pos = potential_anchor + other_block_data.grid_pos;
-				if not grid_ref.can_place_block(test_grid_pos):
+				if not other_block_data.node.can_be_placed_at(grid_ref, test_grid_pos):
 					is_valid = false;
 					break ;
 			
-			if is_valid:
-				var grid_cell_center = grid_ref.global_position + Vector2(
-					grid_x * block_size + block_size / 2.0,
-					grid_y * block_size + block_size / 2.0
-				);
-				var distance = block_global_pos.distance_to(grid_cell_center);
-				
-				if distance < snap_tolerance and distance < min_distance:
-					min_distance = distance;
-					best_anchor = potential_anchor;
+			if is_valid and distance < min_distance:
+				min_distance = distance;
+				best_anchor = potential_anchor;
 	
 	return best_anchor;
 
