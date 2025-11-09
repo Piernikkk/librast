@@ -13,9 +13,8 @@ var mass_center = Vector2.ZERO;
 var piece_bar_scale = 0.6;
 var grid_scale = 1.0;
 
-# Performance optimization: throttle placement checks
 var last_check_time = 0.0;
-var check_interval = 0.05; # Check every 50ms instead of every frame
+var check_interval = 0.05;
 
 func _ready() -> void:
 	original_position = global_position;
@@ -41,7 +40,7 @@ func setup_shape(shape_data: Dictionary, block_scene: PackedScene) -> void:
 				var block = block_scene.instantiate();
 				add_child(block);
 				block.set_block_color(color);
-				block.position = Vector2(x * 64, y * 64);
+				block.position = Vector2(x * 64 + 32, y * 64 + 32);
 				
 				block.grid_pos = Vector2i(x, y);
 				block.shape_parent = self;
@@ -79,7 +78,7 @@ func update_size(use_piece_bar_scale: bool = true) -> void:
 		for block_data in blocks:
 			var block = block_data.node;
 			block.set_block_size(block_size);
-			block.position = Vector2(block_data.grid_pos) * block_size;
+			block.position = Vector2(block_data.grid_pos) * block_size + Vector2(block_size / 2.0, block_size / 2.0);
 		
 		calculate_mass_center();
 		base_scale = scale;
@@ -98,7 +97,6 @@ func _input(event):
 	elif event is InputEventMouseMotion and dragging:
 		global_position = get_global_mouse_position() + drag_offset;
 		
-		# Performance optimization: throttle placement checks
 		if grid_ref:
 			var current_time = Time.get_ticks_msec() / 1000.0;
 			if current_time - last_check_time >= check_interval:
@@ -109,11 +107,16 @@ func _input(event):
 					modulate = Color(1, 1, 1, 0.5);
 
 func is_mouse_over(mouse_pos: Vector2) -> bool:
+	var local_mouse = to_local(mouse_pos);
+	
 	for block_data in blocks:
 		var block = block_data.node;
+		var block_pos = block.position;
 		var rect = block.get_block_rect();
-		var local_mouse = block.to_local(mouse_pos);
-		if rect.has_point(local_mouse):
+		
+		var block_rect = Rect2(block_pos + rect.position, rect.size);
+		
+		if block_rect.has_point(local_mouse):
 			return true;
 	return false;
 

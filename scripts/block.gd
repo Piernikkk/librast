@@ -4,6 +4,7 @@ var grid_pos: Vector2i = Vector2i.ZERO;
 var shape_parent = null;
 
 func _ready() -> void:
+	centered = true;
 	create_solid_texture();
 
 func create_solid_texture() -> void:
@@ -23,7 +24,8 @@ func set_block_size(block_size: float) -> void:
 func get_block_rect() -> Rect2:
 	if texture:
 		var texture_size = texture.get_size();
-		return Rect2(-texture_size / 2.0 * scale, texture_size * scale);
+		var scaled_size = texture_size * scale;
+		return Rect2(-scaled_size / 2.0, scaled_size);
 	return Rect2();
 
 func check_nearby_grid_placements(grid_ref, snap_tolerance: float) -> Array:

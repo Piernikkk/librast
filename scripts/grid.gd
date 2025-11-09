@@ -10,37 +10,17 @@ var grid_pixel_width = 0;
 var grid_pixel_height = 0;
 var dynamic_block_size = 0;
 
-# Performance optimization: prevent excessive redraws
-var resize_timer: Timer = null;
-var pending_resize = false;
-
 func _ready() -> void:
 	initialize_grid();
 	calculate_dynamic_sizes();
 	center_grid();
 	redraw_grid();
-	
-	# Setup resize timer to debounce viewport changes
-	resize_timer = Timer.new();
-	resize_timer.wait_time = 0.2; # Wait 200ms before processing resize
-	resize_timer.one_shot = true;
-	resize_timer.timeout.connect(_apply_viewport_resize);
-	add_child(resize_timer);
-	
 	get_viewport().size_changed.connect(_on_viewport_resized);
 
 func _on_viewport_resized() -> void:
-	# Debounce resize events to prevent excessive redraws
-	pending_resize = true;
-	if resize_timer:
-		resize_timer.start();
-
-func _apply_viewport_resize() -> void:
-	if pending_resize:
-		pending_resize = false;
-		calculate_dynamic_sizes();
-		center_grid();
-		redraw_grid();
+	calculate_dynamic_sizes();
+	center_grid();
+	redraw_grid();
 
 func calculate_dynamic_sizes() -> void:
 	var window_size = DisplayServer.window_get_size();
@@ -64,8 +44,7 @@ func calculate_dynamic_sizes() -> void:
 	grid_pixel_width = GRID_WIDTH * dynamic_block_size;
 	grid_pixel_height = GRID_HEIGHT * dynamic_block_size;
 	
-	if Globals.DEBUG_VERBOSE:
-		print("Dynamic block size: ", dynamic_block_size, " | Grid size: ", grid_pixel_width, "x", grid_pixel_height);
+	print("Dynamic block size: ", dynamic_block_size, " | Grid size: ", grid_pixel_width, "x", grid_pixel_height);
 
 func center_grid() -> void:
 	var window_size = DisplayServer.window_get_size();
@@ -83,8 +62,7 @@ func center_grid() -> void:
 		(effective_size.y - grid_pixel_height) / 2.0 - effective_size.y * 0.05 # Offset up slightly
 	);
 	
-	if Globals.DEBUG_VERBOSE:
-		print("Grid centered at: ", position, " | Window: ", window_size, " | Viewport: ", viewport_size);
+	print("Grid centered at: ", position, " | Window: ", window_size, " | Viewport: ", viewport_size);
 
 func initialize_grid():
 	for x in range(GRID_HEIGHT):
@@ -104,8 +82,7 @@ func can_place_block(grid_pos: Vector2i) -> bool:
 func place_block(grid_pos: Vector2i, block_node) -> void:
 	if can_place_block(grid_pos):
 		grid[grid_pos.y][grid_pos.x] = block_node;
-		if Globals.DEBUG_VERBOSE:
-			print("Block placed at: ", grid_pos);
+		print("Block placed at: ", grid_pos);
 
 func remove_block(grid_pos: Vector2i) -> void:
 	if grid_pos.x >= 0 and grid_pos.x < GRID_WIDTH and grid_pos.y >= 0 and grid_pos.y < GRID_HEIGHT:
@@ -132,8 +109,7 @@ func check_and_clear_lines() -> int:
 	animate_and_clear_lines(rows_to_clear, cols_to_clear);
 	
 	var blocks_cleared = rows_to_clear.size() * GRID_WIDTH + cols_to_clear.size() * GRID_HEIGHT;
-	if Globals.DEBUG_VERBOSE:
-		print("Cleared ", rows_to_clear.size(), " rows and ", cols_to_clear.size(), " columns. Total blocks: ", blocks_cleared);
+	print("Cleared ", rows_to_clear.size(), " rows and ", cols_to_clear.size(), " columns. Total blocks: ", blocks_cleared);
 	
 	return blocks_cleared;
 
