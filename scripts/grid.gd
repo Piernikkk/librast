@@ -73,20 +73,20 @@ func initialize_grid():
 
 func can_place_block(grid_pos: Vector2i) -> bool:
 	if grid_pos.x < 0 or grid_pos.x >= GRID_WIDTH:
-		return false
+		return false;
 	if grid_pos.y < 0 or grid_pos.y >= GRID_HEIGHT:
-		return false
+		return false;
 	
-	return grid[grid_pos.y][grid_pos.x] == null
+	return grid[grid_pos.y][grid_pos.x] == null;
 
 func place_block(grid_pos: Vector2i, block_node) -> void:
 	if can_place_block(grid_pos):
-		grid[grid_pos.y][grid_pos.x] = block_node
-		print("Block placed at: ", grid_pos)
+		grid[grid_pos.y][grid_pos.x] = block_node;
+		print("Block placed at: ", grid_pos);
 
 func remove_block(grid_pos: Vector2i) -> void:
 	if grid_pos.x >= 0 and grid_pos.x < GRID_WIDTH and grid_pos.y >= 0 and grid_pos.y < GRID_HEIGHT:
-		grid[grid_pos.y][grid_pos.x] = null
+		grid[grid_pos.y][grid_pos.x] = null;
 
 func get_block_size() -> int:
 	return dynamic_block_size;
@@ -95,7 +95,6 @@ func redraw_grid() -> void:
 	queue_redraw();
 
 func _draw() -> void:
-	# Draw horizontal lines
 	for y in range(GRID_HEIGHT + 1):
 		draw_line(
 			Vector2(0, y * dynamic_block_size),
@@ -104,7 +103,6 @@ func _draw() -> void:
 			2
 		);
 
-	# Draw vertical lines
 	for x in range(GRID_WIDTH + 1):
 		draw_line(
 			Vector2(x * dynamic_block_size, 0),
