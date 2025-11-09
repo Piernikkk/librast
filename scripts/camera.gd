@@ -17,4 +17,5 @@ func center_camera() -> void:
 	
 	position = effective_size / 2.0;
 	
-	print("Camera centered at: ", position);
+	if Globals.DEBUG_VERBOSE:
+		print("Camera centered at: ", position);

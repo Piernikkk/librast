@@ -1,10 +1,30 @@
-extends ColorRect
+extends Sprite2D
 
 var grid_pos: Vector2i = Vector2i.ZERO;
 var shape_parent = null;
 
+func _ready() -> void:
+	create_solid_texture();
+
+func create_solid_texture() -> void:
+	var img = Image.create(64, 64, false, Image.FORMAT_RGBA8);
+	img.fill(Color.WHITE);
+	texture = ImageTexture.create_from_image(img);
+
 func set_block_color(new_color: Color) -> void:
 	modulate = new_color;
+
+func set_block_size(block_size: float) -> void:
+	if texture:
+		var texture_size = texture.get_size().x;
+		var scale_factor = block_size / texture_size;
+		scale = Vector2(scale_factor, scale_factor);
+
+func get_block_rect() -> Rect2:
+	if texture:
+		var texture_size = texture.get_size();
+		return Rect2(-texture_size / 2.0 * scale, texture_size * scale);
+	return Rect2();
 
 func check_nearby_grid_placements(grid_ref, snap_tolerance: float) -> Array:
 	if not grid_ref:

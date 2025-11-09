@@ -111,13 +111,15 @@ func update_shape_sizes() -> void:
 			
 func _on_shape_placed(placed_shape) -> void:
 	current_shapes.erase(placed_shape);
-	print("Shape placed! Remaining shapes: ", current_shapes.size());
+	if Globals.DEBUG_VERBOSE:
+		print("Shape placed! Remaining shapes: ", current_shapes.size());
 	
 	if not current_shapes.is_empty():
 		check_game_over();
 	
 	if current_shapes.is_empty():
-		print("All shapes used! Respawning...");
+		if Globals.DEBUG_VERBOSE:
+			print("All shapes used! Respawning...");
 		await get_tree().create_timer(0.3).timeout;
 		spawn_shapes();
 		check_game_over();

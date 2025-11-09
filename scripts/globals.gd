@@ -14,3 +14,6 @@ const BLOCK_COLORS: Array[Color] = [
 	Color(1, 0.5, 0), # Orange
 	Color(0.5, 0, 1) # Purple
 ];
+
+# Performance optimization: disable verbose debug prints
+const DEBUG_VERBOSE: bool = false;

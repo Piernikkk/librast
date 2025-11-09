@@ -13,6 +13,10 @@ var mass_center = Vector2.ZERO;
 var piece_bar_scale = 0.6;
 var grid_scale = 1.0;
 
+# Performance optimization: throttle placement checks
+var last_check_time = 0.0;
+var check_interval = 0.05; # Check every 50ms instead of every frame
+
 func _ready() -> void:
 	original_position = global_position;
 	calculate_mass_center();
@@ -25,8 +29,9 @@ func setup_shape(shape_data: Dictionary, block_scene: PackedScene) -> void:
 	
 	shape_pattern = pattern;
 	
-	print("Creating shape: ", shape_data.name, " - Width: ", grid_width, " Height: ", grid_height);
-	print("Pattern: ", pattern);
+	if Globals.DEBUG_VERBOSE:
+		print("Creating shape: ", shape_data.name, " - Width: ", grid_width, " Height: ", grid_height);
+		print("Pattern: ", pattern);
 	
 	var idx = 0
 	var blocks_created = 0
@@ -43,12 +48,15 @@ func setup_shape(shape_data: Dictionary, block_scene: PackedScene) -> void:
 				
 				blocks.append({"node": block, "grid_pos": Vector2i(x, y)});
 				blocks_created += 1;
-				print("  Block ", blocks_created, " at grid pos: ", Vector2i(x, y), " world pos: ", Vector2(x * 64, y * 64));
+				if Globals.DEBUG_VERBOSE:
+					print("  Block ", blocks_created, " at grid pos: ", Vector2i(x, y), " world pos: ", Vector2(x * 64, y * 64));
 			idx += 1;
 	
-	print("Total blocks created: ", blocks_created);
+	if Globals.DEBUG_VERBOSE:
+		print("Total blocks created: ", blocks_created);
 	calculate_mass_center();
-	print("Mass center: ", mass_center);
+	if Globals.DEBUG_VERBOSE:
+		print("Mass center: ", mass_center);
 
 func calculate_mass_center() -> void:
 	if blocks.is_empty():
@@ -70,12 +78,8 @@ func update_size(use_piece_bar_scale: bool = true) -> void:
 		
 		for block_data in blocks:
 			var block = block_data.node;
-			if block.texture:
-				var texture_size = block.texture.get_size();
-				var scale_factor = block_size / texture_size.x;
-				block.scale = Vector2(scale_factor, scale_factor);
-				
-				block.position = Vector2(block_data.grid_pos) * block_size;
+			block.set_block_size(block_size);
+			block.position = Vector2(block_data.grid_pos) * block_size;
 		
 		calculate_mass_center();
 		base_scale = scale;
@@ -94,16 +98,20 @@ func _input(event):
 	elif event is InputEventMouseMotion and dragging:
 		global_position = get_global_mouse_position() + drag_offset;
 		
+		# Performance optimization: throttle placement checks
 		if grid_ref:
-			if can_place_shape():
-				modulate = Color(1, 1, 1, 1.0);
-			else:
-				modulate = Color(1, 1, 1, 0.5);
+			var current_time = Time.get_ticks_msec() / 1000.0;
+			if current_time - last_check_time >= check_interval:
+				last_check_time = current_time;
+				if can_place_shape():
+					modulate = Color(1, 1, 1, 1.0);
+				else:
+					modulate = Color(1, 1, 1, 0.5);
 
 func is_mouse_over(mouse_pos: Vector2) -> bool:
 	for block_data in blocks:
 		var block = block_data.node;
-		var rect = block.get_rect();
+		var rect = block.get_block_rect();
 		var local_mouse = block.to_local(mouse_pos);
 		if rect.has_point(local_mouse):
 			return true;
@@ -208,7 +216,7 @@ func place_shape() -> void:
 		);
 	
 	var blocks_cleared = grid_ref.check_and_clear_lines();
-	if blocks_cleared > 0:
+	if blocks_cleared > 0 and Globals.DEBUG_VERBOSE:
 		print("Cleared ", blocks_cleared, " blocks!");
 	
 	shape_placed.emit();
