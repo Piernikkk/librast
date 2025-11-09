@@ -1,5 +1,7 @@
 extends Node2D
 
+@onready var game_ui = %GameUI;
+
 @onready var block_scene = preload("res://sprites/block.tscn");
 @onready var shape_scene = preload("res://sprites/shape.tscn");
 
@@ -139,4 +141,4 @@ func check_game_over() -> void:
 				break ;
 	
 	if not any_can_fit:
-		get_tree().change_scene_to_file("res://scenes/game_over.tscn");
+		game_ui.call("game_over");

@@ -22,3 +22,7 @@ func _on_quit_pressed() -> void:
 
 func _on_pause_button_pressed() -> void:
 	pause_menu.visible = true;
+
+func game_over() -> void:
+	Globals.score = int(score_label.text);
+	get_tree().change_scene_to_file("res://scenes/game_over.tscn");

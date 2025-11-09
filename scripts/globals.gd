@@ -32,3 +32,5 @@ func calculate_points(rows: int, cols: int) -> int:
 		points = cols * POINT_MULTIPLIER;
 
 	return points;
+
+var score: int = 0;
