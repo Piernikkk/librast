@@ -38,6 +38,8 @@ func spawn_shapes() -> void:
 			shape.queue_free();
 	current_shapes.clear();
 	
+	var shape_datas = [];
+	var temp_shapes = [];
 	for i in range(3):
 		var shape_data = shapes_instance.get_random_shape();
 		var shape = shape_scene.instantiate();
@@ -45,23 +47,66 @@ func spawn_shapes() -> void:
 		
 		shape.setup_shape(shape_data, block_scene);
 		shape.grid_ref = grid_ref;
-		
 		shape.shape_placed.connect(_on_shape_placed.bind(shape));
+		shape.update_size(true);
 		
-		var spacing = grid_ref.dynamic_block_size * 4;
-		shape.position = Vector2((i - 1) * spacing, 0);
-		
-		shape.update_size();
-		
+		temp_shapes.append(shape);
+		shape_datas.append(shape_data);
 		current_shapes.append(shape);
+	
+	var block_size = grid_ref.dynamic_block_size * 0.6;
+	var total_width = 0;
+	var max_width = 0;
+	
+	for shape_data in shape_datas:
+		var width = shape_data.width * block_size;
+		total_width += width;
+		if width > max_width:
+			max_width = width;
+	
+	var padding = block_size * 1.5;
+	total_width += padding * 2;
+	
+	var start_x = - total_width / 2.0;
+	var current_x = start_x;
+	
+	for i in range(3):
+		var shape = temp_shapes[i];
+		var shape_data = shape_datas[i];
+		var shape_width = shape_data.width * block_size;
+		
+		shape.position = Vector2(current_x + shape_width / 2.0, 0);
+		current_x += shape_width + padding;
 
 func update_shape_sizes() -> void:
-	var idx = 0
+	var block_size = grid_ref.dynamic_block_size * 0.6;
+	var total_width = 0;
+	var shape_widths = [];
+	
 	for shape in current_shapes:
-		if is_instance_valid(shape) and shape.has_method("update_size"):
-			shape.update_size();
-			var spacing = grid_ref.dynamic_block_size * 4;
-			shape.position = Vector2((idx - 1) * spacing, 0);
+		if is_instance_valid(shape):
+			shape.update_size(true);
+			var width = 0;
+			for block_data in shape.blocks:
+				var x = block_data.grid_pos.x;
+				if (x + 1) * block_size > width:
+					width = (x + 1) * block_size;
+			shape_widths.append(width);
+			total_width += width;
+	
+	var padding = block_size * 1.5;
+	if shape_widths.size() > 1:
+		total_width += padding * (shape_widths.size() - 1);
+	
+	var start_x = - total_width / 2.0;
+	var current_x = start_x;
+	
+	var idx = 0;
+	for shape in current_shapes:
+		if is_instance_valid(shape) and idx < shape_widths.size():
+			var shape_width = shape_widths[idx];
+			shape.position = Vector2(current_x + shape_width / 2.0, 0);
+			current_x += shape_width + padding;
 			idx += 1;
 			
 func _on_shape_placed(placed_shape) -> void:

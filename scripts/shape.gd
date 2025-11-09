@@ -2,14 +2,16 @@ extends Node2D
 
 signal shape_placed();
 
-var dragging = false
-var drag_offset = Vector2.ZERO
-var original_position = Vector2.ZERO
-var grid_ref = null
-var blocks = [] # Array of block sprites
-var shape_pattern = [] # The pattern definition
-var base_scale = Vector2.ONE
-var mass_center = Vector2.ZERO # Center of mass for the shape
+var dragging = false;
+var drag_offset = Vector2.ZERO;
+var original_position = Vector2.ZERO;
+var grid_ref = null;
+var blocks = [];
+var shape_pattern = [];
+var base_scale = Vector2.ONE;
+var mass_center = Vector2.ZERO;
+var piece_bar_scale = 0.6;
+var grid_scale = 1.0;
 
 func _ready() -> void:
 	original_position = global_position;
@@ -23,7 +25,11 @@ func setup_shape(shape_data: Dictionary, block_scene: PackedScene) -> void:
 	
 	shape_pattern = pattern;
 	
+	print("Creating shape: ", shape_data.name, " - Width: ", grid_width, " Height: ", grid_height);
+	print("Pattern: ", pattern);
+	
 	var idx = 0
+	var blocks_created = 0;
 	for y in range(grid_height):
 		for x in range(grid_width):
 			if idx < pattern.size() and pattern[idx]:
@@ -32,9 +38,13 @@ func setup_shape(shape_data: Dictionary, block_scene: PackedScene) -> void:
 				block.set_color(color);
 				block.position = Vector2(x * 64, y * 64);
 				blocks.append({"node": block, "grid_pos": Vector2i(x, y)});
+				blocks_created += 1;
+				print("  Block ", blocks_created, " at grid pos: ", Vector2i(x, y), " world pos: ", Vector2(x * 64, y * 64));
 			idx += 1;
 	
+	print("Total blocks created: ", blocks_created);
 	calculate_mass_center();
+	print("Mass center: ", mass_center);
 
 func calculate_mass_center() -> void:
 	if blocks.is_empty():
@@ -47,9 +57,12 @@ func calculate_mass_center() -> void:
 	
 	mass_center = sum_pos / blocks.size();
 
-func update_size() -> void:
+func update_size(use_piece_bar_scale: bool = true) -> void:
 	if grid_ref:
 		var block_size = grid_ref.dynamic_block_size;
+		
+		if use_piece_bar_scale:
+			block_size *= piece_bar_scale;
 		
 		for block_data in blocks:
 			var block = block_data.node;
@@ -76,6 +89,12 @@ func _input(event):
 	
 	elif event is InputEventMouseMotion and dragging:
 		global_position = get_global_mouse_position() + drag_offset;
+		
+		if grid_ref:
+			if can_place_shape():
+				modulate = Color(1, 1, 1, 1.0);
+			else:
+				modulate = Color(1, 1, 1, 0.5);
 
 func is_mouse_over(mouse_pos: Vector2) -> bool:
 	for block_data in blocks:
@@ -90,56 +109,96 @@ func start_drag(mouse_pos: Vector2) -> void:
 	dragging = true;
 	drag_offset = global_position - mouse_pos;
 	original_position = global_position;
-	base_scale = scale;
 	z_index = 100;
-	scale = base_scale * 1.1;
+	
+	update_size(false);
+	scale = scale * 1.05;
+	base_scale = scale;
 
 func stop_drag() -> void:
 	dragging = false;
 	z_index = 0;
-	scale = base_scale;
+	modulate = Color(1, 1, 1, 1.0);
 	
 	if grid_ref:
 		if can_place_shape():
 			place_shape();
 		else:
 			return_to_original();
+			update_size(true);
 	else:
 		return_to_original();
+		update_size(true);
 
 func can_place_shape() -> bool:
 	if not grid_ref:
 		return false
 	
-	# Get the anchor grid position (top-left block position on grid)
-	var anchor_pos = get_grid_position_for_anchor()
+	var anchor_pos = get_best_placement_position();
+	if anchor_pos == Vector2i(-1, -1):
+		return false;
 	
-	# Check if all blocks can be placed
 	for block_data in blocks:
-		var grid_pos = anchor_pos + block_data.grid_pos
+		var grid_pos = anchor_pos + block_data.grid_pos;
 		if not grid_ref.can_place_block(grid_pos):
-			return false
-	
-	return true
+			return false;
+	return true;
 
-func get_grid_position_for_anchor() -> Vector2i:
+func get_best_placement_position() -> Vector2i:
 	if not grid_ref:
 		return Vector2i(-1, -1);
 	
 	var block_size = grid_ref.dynamic_block_size;
-	var mass_center_global = global_position + mass_center * scale;
-	var local_pos = mass_center_global - grid_ref.global_position;
 	
-	var mass_grid_x = int(round(local_pos.x / block_size));
-	var mass_grid_y = int(round(local_pos.y / block_size));
+	var snap_tolerance = block_size * 1.5;
 	
-	var mass_center_in_grid = mass_center / block_size;
-	var anchor = Vector2i(
-		mass_grid_x - int(round(mass_center_in_grid.x)),
-		mass_grid_y - int(round(mass_center_in_grid.y))
-	);
+	var best_anchor = Vector2i(-1, -1);
+	var min_distance = INF;
 	
-	return anchor;
+	for block_data in blocks:
+		var block = block_data.node;
+		var block_global_pos = block.global_position;
+		var local_pos = block_global_pos - grid_ref.global_position;
+		
+		var center_x = local_pos.x / block_size;
+		var center_y = local_pos.y / block_size;
+		
+		var check_cells = [
+			Vector2i(int(floor(center_x)), int(floor(center_y))),
+			Vector2i(int(ceil(center_x)), int(floor(center_y))),
+			Vector2i(int(floor(center_x)), int(ceil(center_y))),
+			Vector2i(int(ceil(center_x)), int(ceil(center_y))),
+			Vector2i(int(round(center_x)), int(round(center_y)))
+		];
+		
+		for grid_cell in check_cells:
+			var grid_x = grid_cell.x;
+			var grid_y = grid_cell.y;
+			
+			var potential_anchor = Vector2i(grid_x, grid_y) - block_data.grid_pos;
+			
+			var is_valid = true;
+			for other_block_data in blocks:
+				var test_grid_pos = potential_anchor + other_block_data.grid_pos;
+				if not grid_ref.can_place_block(test_grid_pos):
+					is_valid = false;
+					break ;
+			
+			if is_valid:
+				var grid_cell_center = grid_ref.global_position + Vector2(
+					grid_x * block_size + block_size / 2.0,
+					grid_y * block_size + block_size / 2.0
+				);
+				var distance = block_global_pos.distance_to(grid_cell_center);
+				
+				if distance < snap_tolerance and distance < min_distance:
+					min_distance = distance;
+					best_anchor = potential_anchor;
+	
+	return best_anchor;
+
+func get_grid_position_for_anchor() -> Vector2i:
+	return get_best_placement_position();
 
 func place_shape() -> void:
 	if not can_place_shape():

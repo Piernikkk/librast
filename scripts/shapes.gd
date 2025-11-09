@@ -129,23 +129,30 @@ func rotate_shape(shape_data: Dictionary, steps: int) -> Dictionary:
 	var width = shape_data.width
 	var height = shape_data.height
 	
-	for _i in range(steps):
+	print("Rotating shape ", shape_data.name, " by ", steps, " steps");
+	print("Original: W=", width, " H=", height, " Pattern=", pattern);
+	
+	for step in range(steps):
 		var new_pattern = []
 		var new_width = height
 		var new_height = width
 		
-		for x in range(new_width):
-			for y in range(new_height - 1, -1, -1):
-				var old_index = y * width + x
-				if old_index < pattern.size():
+		for new_y in range(new_height):
+			for new_x in range(new_width):
+				var old_y = new_width - 1 - new_x # old_y = height - 1 - new_x
+				var old_x = new_y
+				var old_index = old_y * width + old_x
+				
+				if old_index >= 0 and old_index < pattern.size():
 					new_pattern.append(pattern[old_index])
 				else:
 					new_pattern.append(false)
 		
 		pattern = new_pattern
-		var _temp = width
 		width = new_width
 		height = new_height
+		
+		print("After step ", step + 1, ": W=", width, " H=", height, " Pattern=", pattern);
 	
 	return {
 		"pattern": pattern,
