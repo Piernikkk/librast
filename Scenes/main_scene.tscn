@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://dj5ve25l1oa5q"]
+
+[ext_resource type="Script" uid="uid://d1hcl4pyos8l1" path="res://scripts/grid.gd" id="1_52fb6"]
+[ext_resource type="Script" uid="uid://c3k8v9m2p5hj7" path="res://scripts/piece_bar.gd" id="2_piece_bar"]
+[ext_resource type="Script" uid="uid://b7n4m8q1k6pj2" path="res://scripts/camera.gd" id="3_camera"]
+
+[node name="MainScene" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -1098.0
+offset_top = -1118.0
+offset_right = 1085.0
+offset_bottom = 1138.0
+color = Color(0.15, 0.15, 0.15, 1)
+
+[node name="Grid" type="Node2D" parent="."]
+script = ExtResource("1_52fb6")
+
+[node name="PieceBar" type="Node2D" parent="."]
+script = ExtResource("2_piece_bar")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("3_camera")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
