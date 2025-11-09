@@ -193,9 +193,6 @@ func can_shape_fit(shape_blocks: Array) -> bool:
 	
 	return false;
 
-func get_block_size() -> int:
-	return dynamic_block_size;
-
 func redraw_grid() -> void:
 	queue_redraw();
 

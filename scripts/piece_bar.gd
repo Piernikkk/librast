@@ -30,7 +30,7 @@ func position_bar() -> void:
 	else:
 		effective_size = viewport_size;
 	
-	position = Vector2(effective_size.x / 2, effective_size.y * 0.85);
+	position = Vector2(0, effective_size.y * 0.85);
 
 func spawn_shapes() -> void:
 	for shape in current_shapes:
@@ -54,60 +54,67 @@ func spawn_shapes() -> void:
 		shape_datas.append(shape_data);
 		current_shapes.append(shape);
 	
-	var block_size = grid_ref.dynamic_block_size * 0.6;
-	var total_width = 0;
-	var max_width = 0;
+	var window_size = DisplayServer.window_get_size();
+	var viewport = get_viewport();
+	var viewport_size = viewport.get_visible_rect().size;
+	var effective_width = max(window_size.x, viewport_size.x);
 	
-	for shape_data in shape_datas:
-		var width = shape_data.width * block_size;
-		total_width += width;
-		if width > max_width:
-			max_width = width;
-	
-	var padding = block_size * 1.5;
-	total_width += padding * 2;
-	
-	var start_x = - total_width / 2.0;
-	var current_x = start_x;
+	var slot_width = effective_width / 3.0;
 	
 	for i in range(3):
 		var shape = temp_shapes[i];
-		var shape_data = shape_datas[i];
-		var shape_width = shape_data.width * block_size;
+		var slot_center_x = slot_width * (i + 0.5);
 		
-		shape.position = Vector2(current_x + shape_width / 2.0, 0);
-		current_x += shape_width + padding;
+		var shape_visual_center = get_shape_visual_center(shape);
+		
+		shape.position = Vector2(slot_center_x - shape_visual_center.x, -shape_visual_center.y);
+
+func get_shape_visual_center(shape: Node2D) -> Vector2:
+	"""Calculate the visual center of a shape based on its blocks' positions"""
+	if shape.blocks.is_empty():
+		return Vector2.ZERO;
+	
+	var min_pos = Vector2(INF, INF);
+	var max_pos = Vector2(-INF, -INF);
+	
+	for block_data in shape.blocks:
+		var block = block_data.node;
+		var block_pos = block.position;
+		
+		min_pos.x = min(min_pos.x, block_pos.x);
+		min_pos.y = min(min_pos.y, block_pos.y);
+		max_pos.x = max(max_pos.x, block_pos.x);
+		max_pos.y = max(max_pos.y, block_pos.y);
+	
+	return (min_pos + max_pos) / 2.0;
 
 func update_shape_sizes() -> void:
-	var block_size = grid_ref.dynamic_block_size * 0.6;
-	var total_width = 0;
-	var shape_widths = [];
-	
 	for shape in current_shapes:
 		if is_instance_valid(shape):
 			shape.update_size(true);
-			var width = 0;
-			for block_data in shape.blocks:
-				var x = block_data.grid_pos.x;
-				if (x + 1) * block_size > width:
-					width = (x + 1) * block_size;
-			shape_widths.append(width);
-			total_width += width;
 	
-	var padding = block_size * 1.5;
-	if shape_widths.size() > 1:
-		total_width += padding * (shape_widths.size() - 1);
+	var window_size = DisplayServer.window_get_size();
+	var viewport = get_viewport();
+	var viewport_size = viewport.get_visible_rect().size;
+	var effective_width = max(window_size.x, viewport_size.x);
 	
-	var start_x = - total_width / 2.0;
-	var current_x = start_x;
+	var slot_width = effective_width / 3.0;
 	
-	var idx = 0;
+	var all_shapes_array = [null, null, null];
 	for shape in current_shapes:
-		if is_instance_valid(shape) and idx < shape_widths.size():
-			var shape_width = shape_widths[idx];
-			shape.position = Vector2(current_x + shape_width / 2.0, 0);
-			current_x += shape_width + padding;
-			idx += 1;
+		if is_instance_valid(shape):
+			var slot_index = int(shape.position.x / slot_width);
+			slot_index = clamp(slot_index, 0, 2);
+			all_shapes_array[slot_index] = shape;
+	
+	for i in range(3):
+		if all_shapes_array[i] != null:
+			var shape = all_shapes_array[i];
+			var slot_center_x = slot_width * (i + 0.5);
+			
+			var shape_visual_center = get_shape_visual_center(shape);
+			
+			shape.position = Vector2(slot_center_x - shape_visual_center.x, -shape_visual_center.y);
 			
 func _on_shape_placed(placed_shape) -> void:
 	current_shapes.erase(placed_shape);

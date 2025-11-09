@@ -191,14 +191,11 @@ func get_best_placement_position() -> Vector2i:
 	
 	return best_anchor;
 
-func get_grid_position_for_anchor() -> Vector2i:
-	return get_best_placement_position();
-
 func place_shape() -> void:
 	if not can_place_shape():
 		return ;
 	
-	var anchor_pos = get_grid_position_for_anchor();
+	var anchor_pos = get_best_placement_position();
 	
 	for block_data in blocks:
 		var grid_pos = anchor_pos + block_data.grid_pos;
