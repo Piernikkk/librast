@@ -5,34 +5,19 @@ extends Node2D
 @onready var block_scene = preload("res://sprites/block.tscn");
 @onready var shape_scene = preload("res://sprites/shape.tscn");
 
-@onready var grid_ref = get_parent().get_node("Grid");
+@onready var grid_ref = get_parent().get_parent().get_node("GridContainer/Grid");
 @onready var shapes_instance = preload("res://scripts/shapes.gd").new();
 var current_shapes = [];
 
 func _ready() -> void:
 	await get_tree().process_frame;
 	
-	position_bar();
 	spawn_shapes();
 	
 	get_viewport().size_changed.connect(_on_viewport_resized);
 
 func _on_viewport_resized() -> void:
-	position_bar();
 	update_shape_sizes();
-
-func position_bar() -> void:
-	var window_size = DisplayServer.window_get_size();
-	var viewport = get_viewport();
-	var viewport_size = viewport.get_visible_rect().size;
-	
-	var effective_size: Vector2;
-	if window_size.x > viewport_size.x:
-		effective_size = Vector2(window_size);
-	else:
-		effective_size = viewport_size;
-	
-	position = Vector2(0, effective_size.y * 0.85);
 
 func spawn_shapes() -> void:
 	for shape in current_shapes:
@@ -56,12 +41,9 @@ func spawn_shapes() -> void:
 		shape_datas.append(shape_data);
 		current_shapes.append(shape);
 	
-	var window_size = DisplayServer.window_get_size();
 	var viewport = get_viewport();
 	var viewport_size = viewport.get_visible_rect().size;
-	var effective_width = max(window_size.x, viewport_size.x);
-	
-	var slot_width = effective_width / 3.0;
+	var slot_width = viewport_size.x / 3.0;
 	
 	for i in range(3):
 		var shape = temp_shapes[i];
@@ -69,7 +51,7 @@ func spawn_shapes() -> void:
 		
 		var shape_visual_center = get_shape_visual_center(shape);
 		
-		shape.position = Vector2(slot_center_x - shape_visual_center.x, -shape_visual_center.y);
+		shape.position = Vector2(slot_center_x - shape_visual_center.x, 50.0);
 
 func get_shape_visual_center(shape: Node2D) -> Vector2:
 	"""Calculate the visual center of a shape based on its blocks' positions"""
@@ -95,12 +77,9 @@ func update_shape_sizes() -> void:
 		if is_instance_valid(shape):
 			shape.update_size(true);
 	
-	var window_size = DisplayServer.window_get_size();
 	var viewport = get_viewport();
 	var viewport_size = viewport.get_visible_rect().size;
-	var effective_width = max(window_size.x, viewport_size.x);
-	
-	var slot_width = effective_width / 3.0;
+	var slot_width = viewport_size.x / 3.0;
 	
 	var all_shapes_array = [null, null, null];
 	for shape in current_shapes:
@@ -116,7 +95,7 @@ func update_shape_sizes() -> void:
 			
 			var shape_visual_center = get_shape_visual_center(shape);
 			
-			shape.position = Vector2(slot_center_x - shape_visual_center.x, -shape_visual_center.y);
+			shape.position = Vector2(slot_center_x - shape_visual_center.x, 50.0);
 			
 func _on_shape_placed(placed_shape) -> void:
 	current_shapes.erase(placed_shape);

@@ -25,18 +25,14 @@ func _on_viewport_resized() -> void:
 	redraw_grid();
 
 func calculate_dynamic_sizes() -> void:
-	var window_size = DisplayServer.window_get_size();
 	var viewport = get_viewport();
 	var viewport_size = viewport.get_visible_rect().size;
 	
-	var effective_size: Vector2;
-	if window_size.x > viewport_size.x:
-		effective_size = Vector2(window_size);
-	else:
-		effective_size = viewport_size;
+	var ui_reserve = 80;
+	var piece_bar_reserve = 150;
 	
-	var available_width = effective_size.x * 0.9;
-	var available_height = effective_size.y * 0.6;
+	var available_width = viewport_size.x * 0.85;
+	var available_height = viewport_size.y - ui_reserve - piece_bar_reserve;
 
 	var block_size_by_width = available_width / GRID_WIDTH;
 	var block_size_by_height = available_height / GRID_HEIGHT;
@@ -46,25 +42,12 @@ func calculate_dynamic_sizes() -> void:
 	grid_pixel_width = GRID_WIDTH * dynamic_block_size;
 	grid_pixel_height = GRID_HEIGHT * dynamic_block_size;
 	
-	print("Dynamic block size: ", dynamic_block_size, " | Grid size: ", grid_pixel_width, "x", grid_pixel_height);
+	print("Viewport: ", viewport_size, " | Block size: ", dynamic_block_size, " | Grid: ", grid_pixel_width, "x", grid_pixel_height);
 
 func center_grid() -> void:
-	var window_size = DisplayServer.window_get_size();
-	var viewport = get_viewport();
-	var viewport_size = viewport.get_visible_rect().size;
+	position = Vector2(-grid_pixel_width / 2.0, -grid_pixel_height / 2.0);
 	
-	var effective_size: Vector2;
-	if window_size.x > viewport_size.x:
-		effective_size = Vector2(window_size);
-	else:
-		effective_size = viewport_size;
-	
-	position = Vector2(
-		(effective_size.x - grid_pixel_width) / 2.0,
-		(effective_size.y - grid_pixel_height) / 2.0 - effective_size.y * 0.05 # Offset up slightly
-	);
-	
-	print("Grid centered at: ", position, " | Window: ", window_size, " | Viewport: ", viewport_size);
+	print("Grid offset: ", position);
 
 func initialize_grid():
 	for x in range(GRID_HEIGHT):
