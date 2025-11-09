@@ -8,7 +8,8 @@ func _ready() -> void:
 	create_solid_texture();
 
 func create_solid_texture() -> void:
-	var img = Image.create(64, 64, false, Image.FORMAT_RGBA8);
+	var visual_size = Globals.BLOCK_SIZE - Globals.BLOCK_SPACING;
+	var img = Image.create(visual_size, visual_size, false, Image.FORMAT_RGBA8);
 	img.fill(Color.WHITE);
 	texture = ImageTexture.create_from_image(img);
 
@@ -17,8 +18,9 @@ func set_block_color(new_color: Color) -> void:
 
 func set_block_size(block_size: float) -> void:
 	if texture:
+		var target_size = block_size - Globals.BLOCK_SPACING;
 		var texture_size = texture.get_size().x;
-		var scale_factor = block_size / texture_size;
+		var scale_factor = target_size / texture_size;
 		scale = Vector2(scale_factor, scale_factor);
 
 func get_block_rect() -> Rect2:

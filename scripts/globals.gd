@@ -1,6 +1,7 @@
 extends Node
 
 const BLOCK_SIZE: int = 64;
+const BLOCK_SPACING: int = 4;
 
 var GRID_COLOR: Color = Color.from_rgba8(88, 91, 112);
 

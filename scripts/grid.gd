@@ -197,12 +197,14 @@ func redraw_grid() -> void:
 	queue_redraw();
 
 func _draw() -> void:
+	var line_width = Globals.BLOCK_SPACING;
+	
 	for y in range(GRID_HEIGHT + 1):
 		draw_line(
 			Vector2(0, y * dynamic_block_size),
 			Vector2(GRID_WIDTH * dynamic_block_size, y * dynamic_block_size),
 			Globals.GRID_COLOR,
-			2
+			line_width
 		);
 
 	for x in range(GRID_WIDTH + 1):
@@ -210,5 +212,5 @@ func _draw() -> void:
 			Vector2(x * dynamic_block_size, 0),
 			Vector2(x * dynamic_block_size, GRID_HEIGHT * dynamic_block_size),
 			Globals.GRID_COLOR,
-			2
+			line_width
 		);
