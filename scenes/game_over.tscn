@@ -1,0 +1,105 @@
+[gd_scene load_steps=9 format=3 uid="uid://bff7ggna66jou"]
+
+[ext_resource type="Script" uid="uid://b6ju1nbspgt40" path="res://scripts/game_over.gd" id="1_xeevv"]
+
+[sub_resource type="Gradient" id="Gradient_0nqlu"]
+offsets = PackedFloat32Array(0, 0.19333333, 0.84, 0.96666664)
+colors = PackedColorArray(1, 0.6553498, 0.6018409, 1, 0.99999994, 0.1943762, 0.14415294, 1, 0.2679457, 0.20587684, 0.20587684, 1, 0.21950102, 0.21950102, 0.21950102, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_xeevv"]
+gradient = SubResource("Gradient_0nqlu")
+fill_from = Vector2(0.635514, 0.24299066)
+fill_to = Vector2(0.6214953, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0nqlu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xeevv"]
+content_margin_left = 20.0
+content_margin_top = 5.0
+content_margin_right = 20.0
+content_margin_bottom = 5.0
+bg_color = Color(0.27129012, 0.6613565, 0.5527387, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wqhvx"]
+content_margin_left = 20.0
+content_margin_top = 5.0
+content_margin_right = 20.0
+content_margin_bottom = 5.0
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tbwuq"]
+content_margin_left = 20.0
+content_margin_top = 5.0
+content_margin_right = 20.0
+content_margin_bottom = 5.0
+bg_color = Color(0.09469537, 0.28756103, 0.23423728, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="Theme" id="Theme_racf3"]
+Button/constants/outline_size = 0
+Button/font_sizes/font_size = 48
+Button/styles/focus = SubResource("StyleBoxEmpty_0nqlu")
+Button/styles/hover = SubResource("StyleBoxFlat_xeevv")
+Button/styles/normal = SubResource("StyleBoxFlat_wqhvx")
+Button/styles/pressed = SubResource("StyleBoxFlat_tbwuq")
+
+[node name="Game Over" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xeevv")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_xeevv")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 100
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 48
+text = "GAME OVER"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Restart" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme = SubResource("Theme_racf3")
+text = "RESTART"
+
+[node name="MainMenu" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme = SubResource("Theme_racf3")
+text = "MAIN MENU"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/Restart" to="." method="_on_restart_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/VBoxContainer/MainMenu" to="." method="_on_main_menu_pressed"]

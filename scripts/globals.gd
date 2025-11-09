@@ -15,5 +15,19 @@ const BLOCK_COLORS: Array[Color] = [
 	Color(0.5, 0, 1) # Purple
 ];
 
-# Performance optimization: disable verbose debug prints
 const DEBUG_VERBOSE: bool = false;
+
+const POINT_MULTIPLIER: int = 10;
+
+
+func calculate_points(rows: int, cols: int) -> int:
+	var points = 0;
+
+	if rows > 0 and cols > 0:
+		points = rows * cols * POINT_MULTIPLIER;
+	elif rows > 0:
+		points = rows * POINT_MULTIPLIER;
+	elif cols > 0:
+		points = cols * POINT_MULTIPLIER;
+
+	return points;

@@ -132,4 +132,4 @@ func check_game_over() -> void:
 				break ;
 	
 	if not any_can_fit:
-		print("GAME OVER - No shapes can fit!");
+		get_tree().change_scene_to_file("res://scenes/game_over.tscn");

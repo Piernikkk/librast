@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://doqj2iwnefo41"]
 
-[ext_resource type="Script" uid="uid://cfht5c5vibcwl" path="res://scripts/start_screen.gd" id="1_o7i0r"]
+[ext_resource type="Script" path="res://scripts/start_screen.gd" id="1_o7i0r"]
 [ext_resource type="Theme" uid="uid://cmx0sw68bgwxm" path="res://styles/button_style.tres" id="1_tx5wa"]
 
 [sub_resource type="Gradient" id="Gradient_he1sj"]
@@ -39,6 +39,7 @@ theme_override_constants/separation = 100
 
 [node name="Label" type="Label" parent="Main/VBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 70
 text = "LIBRAST"
 

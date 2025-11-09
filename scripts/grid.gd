@@ -1,5 +1,7 @@
 extends Node2D
 
+signal add_points(points: int);
+
 const GRID_WIDTH = 8;
 const GRID_HEIGHT = 8;
 
@@ -115,7 +117,10 @@ func check_and_clear_lines() -> int:
 
 func animate_and_clear_lines(rows: Array, cols: Array) -> void:
 	var blocks_to_animate = [];
-	
+
+	var points = Globals.calculate_points(rows.size(), cols.size());
+	add_points.emit(points);
+
 	for y in rows:
 		for x in range(GRID_WIDTH):
 			if grid[y][x] != null:
@@ -170,22 +175,6 @@ func is_column_full(x: int) -> bool:
 		if grid[y][x] == null:
 			return false;
 	return true;
-
-func clear_row(y: int) -> int:
-	var cleared = 0;
-	for x in range(GRID_WIDTH):
-		if grid[y][x] != null:
-			remove_block(Vector2i(x, y));
-			cleared += 1;
-	return cleared;
-
-func clear_column(x: int) -> int:
-	var cleared = 0;
-	for y in range(GRID_HEIGHT):
-		if grid[y][x] != null:
-			remove_block(Vector2i(x, y));
-			cleared += 1;
-	return cleared;
 
 func can_shape_fit(shape_blocks: Array) -> bool:
 	for try_y in range(GRID_HEIGHT):
