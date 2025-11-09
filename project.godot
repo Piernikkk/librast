@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Librast"
-run/main_scene="uid://dj5ve25l1oa5q"
+run/main_scene="uid://doqj2iwnefo41"
 config/features=PackedStringArray("4.5", "Mobile")
 config/icon="res://icon.svg"
 
@@ -21,8 +21,8 @@ Globals="*res://scripts/globals.gd"
 
 [display]
 
-window/size/viewport_width=90
-window/size/viewport_height=160
+window/size/viewport_width=420
+window/size/viewport_height=746
 window/size/window_width_override=420
 window/size/window_height_override=746
 
@@ -32,4 +32,7 @@ enabled=PackedStringArray("res://addons/godot_super-wakatime/plugin.cfg")
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="mobile"
+textures/decals/filter=0
+textures/light_projectors/filter=0
