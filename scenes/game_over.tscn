@@ -8,6 +8,8 @@ colors = PackedColorArray(1, 0.6553498, 0.6018409, 1, 0.99999994, 0.1943762, 0.1
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_xeevv"]
 gradient = SubResource("Gradient_0nqlu")
+width = 711
+height = 989
 fill_from = Vector2(0.635514, 0.24299066)
 fill_to = Vector2(0.6214953, 1)
 
@@ -71,7 +73,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+layout_mode = 2
+color = Color(0.8235294, 0.05882353, 0.22352941, 1)
+
 [node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+visible = false
 layout_mode = 2
 texture = SubResource("GradientTexture2D_xeevv")
 

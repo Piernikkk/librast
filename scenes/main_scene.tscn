@@ -12,7 +12,7 @@ offset_left = -1098.0
 offset_top = -1118.0
 offset_right = 1085.0
 offset_bottom = 1138.0
-color = Color(0.15, 0.15, 0.15, 1)
+color = Color(0.11764706, 0.11764706, 0.18039216, 1)
 
 [node name="Grid" type="Node2D" parent="."]
 script = ExtResource("1_52fb6")

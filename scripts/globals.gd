@@ -2,17 +2,17 @@ extends Node
 
 const BLOCK_SIZE: int = 64;
 
-const GRID_COLOR: Color = Color(0.3, 0.3, 0.3);
+var GRID_COLOR: Color = Color.from_rgba8(88, 91, 112);
 
-const BLOCK_COLORS: Array[Color] = [
-	Color(1, 0, 0), # Red
-	Color(0, 1, 0), # Green
-	Color(0, 0, 1), # Blue
-	Color(1, 1, 0), # Yellow
-	Color(1, 0, 1), # Magenta
-	Color(0, 1, 1), # Cyan
-	Color(1, 0.5, 0), # Orange
-	Color(0.5, 0, 1) # Purple
+var BLOCK_COLORS: Array[Color] = [
+	Color.from_rgba8(243, 139, 168), # Red
+	Color.from_rgba8(166, 227, 161), # Green
+	Color.from_rgba8(137, 180, 250), # Blue
+	Color.from_rgba8(249, 226, 175), # Yellow
+	Color.from_rgba8(203, 166, 247), # Mauve
+	Color.from_rgba8(116, 199, 236), # Sapphire
+	Color.from_rgba8(250, 179, 135), # Orange
+	Color.from_rgba8(245, 194, 231) # Pink
 ];
 
 const DEBUG_VERBOSE: bool = false;
