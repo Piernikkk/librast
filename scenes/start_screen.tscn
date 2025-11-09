@@ -61,10 +61,11 @@ layout_mode = 2
 theme = ExtResource("1_tx5wa")
 text = "Play"
 
-[node name="Button2" type="Button" parent="Main/VBoxContainer/VBoxContainer"]
+[node name="Settings" type="Button" parent="Main/VBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 theme = ExtResource("1_tx5wa")
 text = "Settings"
 
 [connection signal="pressed" from="Main/VBoxContainer/VBoxContainer/Play Button" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Main/VBoxContainer/VBoxContainer/Settings" to="." method="_on_settings_pressed"]
