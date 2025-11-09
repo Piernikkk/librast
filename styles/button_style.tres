@@ -7,7 +7,7 @@
 
 [resource]
 Button/constants/outline_size = 0
-Button/font_sizes/font_size = 32
+Button/font_sizes/font_size = 48
 Button/styles/focus = SubResource("StyleBoxEmpty_8tqd6")
 Button/styles/hover = ExtResource("1_8tqd6")
 Button/styles/normal = ExtResource("1_8tqd6")

@@ -1,14 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://dkrxytgve65sg"]
+[gd_scene load_steps=2 format=3 uid="uid://dkrxytgve65sg"]
 
 [ext_resource type="Script" uid="uid://2f0jpmp4mpdn" path="res://scripts/block.gd" id="1_oge17"]
 
-[sub_resource type="Gradient" id="Gradient_oge17"]
-offsets = PackedFloat32Array(0, 0.7866667, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.56, 0.56, 0.56, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_egey1"]
-gradient = SubResource("Gradient_oge17")
-
-[node name="Block" type="Sprite2D"]
-texture = SubResource("GradientTexture2D_egey1")
+[node name="Block" type="ColorRect"]
+offset_right = 40.0
+offset_bottom = 40.0
 script = ExtResource("1_oge17")

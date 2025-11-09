@@ -35,7 +35,7 @@ func setup_shape(shape_data: Dictionary, block_scene: PackedScene) -> void:
 			if idx < pattern.size() and pattern[idx]:
 				var block = block_scene.instantiate();
 				add_child(block);
-				block.set_color(color);
+				block.set_block_color(color);
 				block.position = Vector2(x * 64, y * 64);
 				
 				block.grid_pos = Vector2i(x, y);

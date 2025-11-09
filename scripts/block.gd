@@ -1,9 +1,9 @@
-extends Sprite2D
+extends ColorRect
 
 var grid_pos: Vector2i = Vector2i.ZERO;
 var shape_parent = null;
 
-func set_color(new_color: Color) -> void:
+func set_block_color(new_color: Color) -> void:
 	modulate = new_color;
 
 func check_nearby_grid_placements(grid_ref, snap_tolerance: float) -> Array:

@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://doqj2iwnefo41"]
+[gd_scene load_steps=5 format=3 uid="uid://doqj2iwnefo41"]
 
+[ext_resource type="Script" uid="uid://cfht5c5vibcwl" path="res://scripts/start_screen.gd" id="1_o7i0r"]
 [ext_resource type="Theme" uid="uid://cmx0sw68bgwxm" path="res://styles/button_style.tres" id="1_tx5wa"]
+
+[sub_resource type="Gradient" id="Gradient_he1sj"]
+colors = PackedColorArray(0.38189265, 0.56116074, 0.78945, 1, 0.12166885, 0.16789371, 0.6645546, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_r2jwc"]
+gradient = SubResource("Gradient_he1sj")
+fill_from = Vector2(0.17289719, 0.80841124)
 
 [node name="Start Screen" type="Control"]
 layout_mode = 3
@@ -9,8 +17,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_o7i0r")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Main" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,28 +27,37 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="Main"]
 layout_mode = 2
-color = Color(0.37839484, 0.42656678, 0.8899608, 1)
+texture = SubResource("GradientTexture2D_r2jwc")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Main"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 100
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Main/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
 text = "LIBRAST"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Main/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_constants/separation = 30
 
-[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="Play Button" type="Button" parent="Main/VBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 theme = ExtResource("1_tx5wa")
 text = "Play"
+
+[node name="Button2" type="Button" parent="Main/VBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+theme = ExtResource("1_tx5wa")
+text = "Settings"
+
+[connection signal="pressed" from="Main/VBoxContainer/VBoxContainer/Play Button" to="." method="_on_play_pressed"]
