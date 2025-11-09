@@ -86,7 +86,63 @@ func place_block(grid_pos: Vector2i, block_node) -> void:
 
 func remove_block(grid_pos: Vector2i) -> void:
 	if grid_pos.x >= 0 and grid_pos.x < GRID_WIDTH and grid_pos.y >= 0 and grid_pos.y < GRID_HEIGHT:
+		var block_node = grid[grid_pos.y][grid_pos.x];
 		grid[grid_pos.y][grid_pos.x] = null;
+		if block_node and is_instance_valid(block_node):
+			block_node.queue_free();
+
+func check_and_clear_lines() -> int:
+	var rows_to_clear = [];
+	var cols_to_clear = [];
+	
+	for y in range(GRID_HEIGHT):
+		if is_row_full(y):
+			rows_to_clear.append(y);
+	
+	for x in range(GRID_WIDTH):
+		if is_column_full(x):
+			cols_to_clear.append(x);
+	
+	var blocks_cleared = 0;
+	
+	for y in rows_to_clear:
+		blocks_cleared += clear_row(y);
+	
+	for x in cols_to_clear:
+		blocks_cleared += clear_column(x);
+	
+	if blocks_cleared > 0:
+		print("Cleared ", rows_to_clear.size(), " rows and ", cols_to_clear.size(), " columns. Total blocks: ", blocks_cleared);
+	
+	return blocks_cleared;
+
+func is_row_full(y: int) -> bool:
+	for x in range(GRID_WIDTH):
+		if grid[y][x] == null:
+			return false;
+	return true;
+
+func is_column_full(x: int) -> bool:
+	for y in range(GRID_HEIGHT):
+		if grid[y][x] == null:
+			return false;
+	return true;
+
+func clear_row(y: int) -> int:
+	var cleared = 0;
+	for x in range(GRID_WIDTH):
+		if grid[y][x] != null:
+			remove_block(Vector2i(x, y))
+			cleared += 1;
+	return cleared;
+
+func clear_column(x: int) -> int:
+	var cleared = 0;
+	for y in range(GRID_HEIGHT):
+		if grid[y][x] != null:
+			remove_block(Vector2i(x, y))
+			cleared += 1;
+	return cleared;
 
 func get_block_size() -> int:
 	return dynamic_block_size;

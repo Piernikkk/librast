@@ -207,6 +207,10 @@ func place_shape() -> void:
 			grid_pos.y * block_size + block_size / 2.0
 		);
 	
+	var blocks_cleared = grid_ref.check_and_clear_lines();
+	if blocks_cleared > 0:
+		print("Cleared ", blocks_cleared, " blocks!");
+	
 	shape_placed.emit();
 
 	blocks.clear()
