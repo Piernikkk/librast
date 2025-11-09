@@ -103,18 +103,61 @@ func check_and_clear_lines() -> int:
 		if is_column_full(x):
 			cols_to_clear.append(x);
 	
-	var blocks_cleared = 0;
+	if rows_to_clear.is_empty() and cols_to_clear.is_empty():
+		return 0;
 	
-	for y in rows_to_clear:
-		blocks_cleared += clear_row(y);
+	animate_and_clear_lines(rows_to_clear, cols_to_clear);
 	
-	for x in cols_to_clear:
-		blocks_cleared += clear_column(x);
-	
-	if blocks_cleared > 0:
-		print("Cleared ", rows_to_clear.size(), " rows and ", cols_to_clear.size(), " columns. Total blocks: ", blocks_cleared);
+	var blocks_cleared = rows_to_clear.size() * GRID_WIDTH + cols_to_clear.size() * GRID_HEIGHT;
+	print("Cleared ", rows_to_clear.size(), " rows and ", cols_to_clear.size(), " columns. Total blocks: ", blocks_cleared);
 	
 	return blocks_cleared;
+
+func animate_and_clear_lines(rows: Array, cols: Array) -> void:
+	var blocks_to_animate = [];
+	
+	for y in rows:
+		for x in range(GRID_WIDTH):
+			if grid[y][x] != null:
+				var block_node = grid[y][x];
+				if not blocks_to_animate.has(block_node):
+					blocks_to_animate.append(block_node);
+	
+	for x in cols:
+		for y in range(GRID_HEIGHT):
+			if grid[y][x] != null:
+				var block_node = grid[y][x];
+				if not blocks_to_animate.has(block_node):
+					blocks_to_animate.append(block_node);
+	
+	for block_node in blocks_to_animate:
+		animate_block_clear(block_node);
+	
+	await get_tree().create_timer(0.3).timeout;
+	
+	for y in rows:
+		for x in range(GRID_WIDTH):
+			grid[y][x] = null;
+	
+	for x in cols:
+		for y in range(GRID_HEIGHT):
+			grid[y][x] = null;
+
+func animate_block_clear(block_node: Node2D) -> void:
+	if not block_node or not is_instance_valid(block_node):
+		return ;
+	
+	var tween = create_tween();
+	tween.set_parallel(true);
+	
+	tween.tween_property(block_node, "modulate", Color(2.0, 2.0, 2.0, 1.0), 0.1);
+	tween.tween_property(block_node, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.1).set_delay(0.1);
+	
+	tween.tween_property(block_node, "scale", Vector2.ZERO, 0.2).set_delay(0.15);
+	
+	tween.tween_property(block_node, "modulate:a", 0.0, 0.15).set_delay(0.15);
+	
+	tween.tween_callback(block_node.queue_free).set_delay(0.3);
 
 func is_row_full(y: int) -> bool:
 	for x in range(GRID_WIDTH):
@@ -132,7 +175,7 @@ func clear_row(y: int) -> int:
 	var cleared = 0;
 	for x in range(GRID_WIDTH):
 		if grid[y][x] != null:
-			remove_block(Vector2i(x, y))
+			remove_block(Vector2i(x, y));
 			cleared += 1;
 	return cleared;
 
@@ -140,7 +183,7 @@ func clear_column(x: int) -> int:
 	var cleared = 0;
 	for y in range(GRID_HEIGHT):
 		if grid[y][x] != null:
-			remove_block(Vector2i(x, y))
+			remove_block(Vector2i(x, y));
 			cleared += 1;
 	return cleared;
 
