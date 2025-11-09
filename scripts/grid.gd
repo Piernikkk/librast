@@ -187,6 +187,23 @@ func clear_column(x: int) -> int:
 			cleared += 1;
 	return cleared;
 
+func can_shape_fit(shape_blocks: Array) -> bool:
+	for try_y in range(GRID_HEIGHT):
+		for try_x in range(GRID_WIDTH):
+			var anchor = Vector2i(try_x, try_y);
+			var can_fit = true;
+			
+			for block_data in shape_blocks:
+				var grid_pos = anchor + block_data.grid_pos;
+				if not can_place_block(grid_pos):
+					can_fit = false;
+					break ;
+			
+			if can_fit:
+				return true;
+	
+	return false;
+
 func get_block_size() -> int:
 	return dynamic_block_size;
 

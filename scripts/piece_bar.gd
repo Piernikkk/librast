@@ -113,7 +113,23 @@ func _on_shape_placed(placed_shape) -> void:
 	current_shapes.erase(placed_shape);
 	print("Shape placed! Remaining shapes: ", current_shapes.size());
 	
+	if not current_shapes.is_empty():
+		check_game_over();
+	
 	if current_shapes.is_empty():
 		print("All shapes used! Respawning...");
 		await get_tree().create_timer(0.3).timeout;
 		spawn_shapes();
+		check_game_over();
+
+func check_game_over() -> void:
+	var any_can_fit = false;
+	
+	for shape in current_shapes:
+		if is_instance_valid(shape) and shape.blocks.size() > 0:
+			if grid_ref.can_shape_fit(shape.blocks):
+				any_can_fit = true;
+				break ;
+	
+	if not any_can_fit:
+		print("GAME OVER - No shapes can fit!");
