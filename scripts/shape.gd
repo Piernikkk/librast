@@ -109,18 +109,30 @@ func _input(event):
 					modulate = Color(1, 1, 1, 0.5);
 
 func is_mouse_over(mouse_pos: Vector2) -> bool:
+	if blocks.is_empty():
+		return false;
+	
 	var local_mouse = to_local(mouse_pos);
+	
+	var min_pos = Vector2(INF, INF);
+	var max_pos = Vector2(-INF, -INF);
 	
 	for block_data in blocks:
 		var block = block_data.node;
 		var block_pos = block.position;
 		var rect = block.get_block_rect();
 		
-		var block_rect = Rect2(block_pos + rect.position, rect.size);
+		var block_min = block_pos + rect.position;
+		var block_max = block_pos + rect.position + rect.size;
 		
-		if block_rect.has_point(local_mouse):
-			return true;
-	return false;
+		min_pos.x = min(min_pos.x, block_min.x);
+		min_pos.y = min(min_pos.y, block_min.y);
+		max_pos.x = max(max_pos.x, block_max.x);
+		max_pos.y = max(max_pos.y, block_max.y);
+	
+	var bounding_rect = Rect2(min_pos, max_pos - min_pos);
+	
+	return bounding_rect.has_point(local_mouse);
 
 func start_drag(mouse_pos: Vector2) -> void:
 	dragging = true;
@@ -219,7 +231,7 @@ func place_shape() -> void:
 	
 	var blocks_cleared = grid_ref.check_and_clear_lines();
 	if blocks_cleared > 0 and Globals.DEBUG_VERBOSE:
-		print("Cleared ", blocks_cleared, " blocks!");
+		print("Cleared ", blocks_cleared, " blocks");
 	
 	shape_placed.emit();
 
