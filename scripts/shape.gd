@@ -136,6 +136,7 @@ func is_mouse_over(mouse_pos: Vector2) -> bool:
 
 func start_drag(mouse_pos: Vector2) -> void:
 	dragging = true;
+	Vibrations.on_block_picked_up();
 	drag_offset = global_position - mouse_pos;
 	original_position = global_position;
 	z_index = 100;
@@ -206,8 +207,7 @@ func get_best_placement_position() -> Vector2i:
 	return best_anchor;
 
 func place_shape() -> void:
-	if not can_place_shape():
-		return ;
+	Vibrations.on_block_placed();
 	
 	var anchor_pos = get_best_placement_position();
 	

@@ -53,5 +53,6 @@ script = ExtResource("3_camera")
 
 [node name="GameUI" parent="." instance=ExtResource("4_pu3yx")]
 unique_name_in_owner = true
+layout_mode = 1
 
 [connection signal="add_points" from="GridContainer/Grid" to="GameUI" method="_on_grid_add_points"]

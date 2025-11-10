@@ -6,6 +6,7 @@ extends Control
 func _ready() -> void:
 	score_label.text = str(Globals.score);
 	high_score_label.text = str(Globals.high_score);
+	Vibrations.on_game_over();
 
 func _on_restart_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/main_scene.tscn");
