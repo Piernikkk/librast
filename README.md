@@ -22,14 +22,15 @@ Your goal is to place the blocks on the grid so everything fits and clear rows a
 - Score
 - Pause menu
 - Haptic feedback
+- Apoicon with splashscreen
 
 ## Assets Used:
 
-I guess i only used settings icon from [tabler](https://tabler.io/icons). The rest is just godot colored sprites.
+I guess i only used settings and grid icon from [tabler](https://tabler.io/icons). The rest is just godot colored sprites.
 
 ## Tech Stack:
 
-This project is built with [Godot](https://godotengine.org/) Engine with `GDScript`. Also a bit of figma to mage png for settings icon.
+This project is built with [Godot](https://godotengine.org/) Engine with `GDScript`. Also a bit of figma to mage png for settings icon and app icon.
 
 ## Project Setup:
 
