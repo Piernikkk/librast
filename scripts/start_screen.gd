@@ -1,7 +1,11 @@
 extends Control
 
 
-@onready var main_menu = %MainMenu;
+@onready var high_score = %HighScore;
+
+func _ready() -> void:
+	high_score.text = str(Globals.high_score);
+
 
 func _on_play_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/main_scene.tscn");
