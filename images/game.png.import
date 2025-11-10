@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bj04wnd6vjwut"
-path="res://.godot/imported/Sprite sheet for Basic Pack.png-eabe7b01c3a789601ffb6404d896cf0e.ctex"
+uid="uid://dqgystrqm1e8b"
+path="res://.godot/imported/game.png-9f04203ffd6c914b7acc3e04979caa6a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Sprite sheet for Basic Pack.png"
-dest_files=["res://.godot/imported/Sprite sheet for Basic Pack.png-eabe7b01c3a789601ffb6404d896cf0e.ctex"]
+source_file="res://images/game.png"
+dest_files=["res://.godot/imported/game.png-9f04203ffd6c914b7acc3e04979caa6a.ctex"]
 
 [params]
 
