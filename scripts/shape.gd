@@ -75,6 +75,8 @@ func update_size(use_piece_bar_scale: bool = true) -> void:
 		if use_piece_bar_scale:
 			block_size *= piece_bar_scale;
 		
+		scale = Vector2.ONE;
+		
 		for block_data in blocks:
 			var block = block_data.node;
 			block.set_block_size(block_size);
@@ -127,7 +129,7 @@ func start_drag(mouse_pos: Vector2) -> void:
 	z_index = 100;
 	
 	update_size(false);
-	scale = scale * 1.05;
+	scale = Vector2.ONE * 1.05;
 	base_scale = scale;
 
 func stop_drag() -> void:
