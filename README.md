@@ -21,6 +21,7 @@ Your goal is to place the blocks on the grid so everything fits and clear rows a
 - Game logic that detects if you can't place any more blocks
 - Score
 - Pause menu
+- Haptic feedback
 
 ## Assets Used:
 
@@ -37,3 +38,13 @@ This is just a godot game so everyting you need to do is:
 1. Clone this repo: git clone `https://github.com/Piernikkk/librast.git`
 2. Open godot
 3. Click Import -> Browse -> Select cloned repo -> Import
+
+## Building:
+
+### Dependencies:
+
+You need to have android studio installed on your machine, or at least I think it's the easiest way to obtain needed toolchain. You also need to install java, godot recomends [jdk 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html), depends on your os, but on fedora it's just `sudo dnf install -y java-21-openjdk-devel`. And you need to give godot your java path in Editor settings (just search for java under `Editor` -> `Editor Settings` options at the top of the godot window). For me it was `/usr/lib/jvm/java-17-openjdk/`.
+
+### Building:
+
+You just go to `Project` -> `Export`, select android and click export project. All settings should be there loaded from export presets file in repo.
