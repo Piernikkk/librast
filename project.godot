@@ -11,13 +11,18 @@ config_version=5
 [application]
 
 config/name="Librast"
+config/description="Play your favourite brain-fu\\*\\*ing puzzle game!
+
+This is all you need to waste huge amount of time and not be productive at all.
+
+Beat you highscores or something idk but this time without annoying adds and other data mining, privacy invading features.s"
 run/main_scene="uid://doqj2iwnefo41"
 config/features=PackedStringArray("4.5", "Mobile")
-config/icon="res://icon.svg"
 boot_splash/bg_color=Color(0.11764706, 0.11764706, 0.18039216, 1)
-boot_splash/image="res://icon.svg"
 boot_splash/fullsize=false
 boot_splash/use_filter=false
+boot_splash/image="res://icon.svg"
+config/icon="res://icon.svg"
 
 [autoload]
 
