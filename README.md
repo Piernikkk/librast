@@ -12,6 +12,10 @@ Beat you highscores or something idk but this time without annoying adds and oth
 
 Your goal is to place the blocks on the grid so everything fits and clear rows and columns by making straight lines from the blocks. I guess you know the drill.
 
+## Demo video
+
+[![](https://markdown-videos-api.jorgenkh.no/youtube/LE_bMB0ewQ4)](https://youtube.com/shorts/LE_bMB0ewQ4)
+
 ## Features:
 
 - Main screen with buttons and high score indicator
